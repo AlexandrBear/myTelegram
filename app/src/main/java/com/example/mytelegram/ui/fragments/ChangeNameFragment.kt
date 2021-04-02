@@ -1,15 +1,15 @@
 package com.example.mytelegram.ui.fragments
 
-import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import com.example.mytelegram.MainActivity
 import com.example.mytelegram.R
 import com.example.mytelegram.utilits.*
 import kotlinx.android.synthetic.main.fragment_change_name.*
 
 
-class ChangeNameFragment : Fragment(R.layout.fragment_change_name) {
+class ChangeNameFragment : BaseFragment(R.layout.fragment_change_name) {
 
     override fun onResume() {
         super.onResume()
