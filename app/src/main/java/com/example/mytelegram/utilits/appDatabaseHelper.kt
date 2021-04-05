@@ -1,6 +1,8 @@
 package com.example.mytelegram.utilits
 
 import android.net.Uri
+import android.provider.ContactsContract
+import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -63,4 +65,28 @@ inline fun initUser(crossinline function: () -> Unit) {
             }
             function()
         })
+}
+fun initContacts() {
+    if (checkPermission(READ_CONTACTS)){
+        var arrayContackts = arrayListOf<CommonModel>()
+        val cursor = APP_ACTIVITY.contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            null,
+            null,
+            null
+        )
+        cursor?.let{
+            while (cursor.moveToNext()){
+                val fullName = it.getString(it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                val phone = it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                val newModel = CommonModel()
+                newModel.fullname = fullName
+                newModel.phone = phone.replace(Regex("[\\s,-]"),"")
+                arrayContackts.add(newModel)
+
+            }
+        }
+        cursor?.close()
+    }
 }
