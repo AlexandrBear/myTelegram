@@ -1,1 +1,10 @@
 /build
+*.iml
+.grable
+/local.properties
+.DS_Store
+/captures
+.externalNativeBuild
+.cxx
+google-services.json
+/app/build

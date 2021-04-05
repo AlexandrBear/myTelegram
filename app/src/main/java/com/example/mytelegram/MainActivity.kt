@@ -1,8 +1,10 @@
 package com.example.mytelegram
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.example.mytelegram.activities.RegisterActivity
 import com.example.mytelegram.databinding.ActivityMainBinding
 import com.example.mytelegram.ui.fragments.ChatsFragment
@@ -18,18 +20,27 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        /*Фунция запускается один раз, при создании активити*/
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         APP_ACTIVITY = this
         initFirebase()
         initUser {
+            initContacts()
             initFields()
             initFunc()
         }
     }
 
+    private fun initContacts() {
+        if (checkPermission(READ_CONTACTS)){
+            showToast("Чтение контактов")
+        }
+    }
+
     private fun initFunc() {
+        /*Функция инициализирует функциональность приложения*/
         if (AUTH.currentUser != null) {
             setSupportActionBar(mToolbar)
             mAppDrawer.create()
@@ -52,5 +63,16 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         AppStates.updateState(AppStates.OFFLINE)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (ContextCompat.checkSelfPermission(APP_ACTIVITY, READ_CONTACTS)==PackageManager.PERMISSION_GRANTED){
+            initContacts()
+        }
     }
 }
