@@ -3,7 +3,7 @@ package com.example.mytelegram.utilits
 import android.net.Uri
 import android.provider.ContactsContract
 import com.example.mytelegram.models.CommonModel
-import com.example.mytelegram.models.User
+import com.example.mytelegram.models.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
@@ -16,7 +16,7 @@ lateinit var AUTH: FirebaseAuth
 lateinit var CURRENT_UID: String
 lateinit var REF_DATA_ROOT: DatabaseReference
 lateinit var REF_STORAGE_ROOT: StorageReference
-lateinit var USER: User
+lateinit var USER: UserModel
 
 const val NODE_USERS = "users"
 const val NODE_USERNAMES = "usernames"
@@ -37,7 +37,7 @@ const val CHILD_STATE = "state"
 fun initFirebase() {
     AUTH = FirebaseAuth.getInstance()
     REF_DATA_ROOT = FirebaseDatabase.getInstance().reference
-    USER = User()
+    USER = UserModel()
     CURRENT_UID = AUTH.currentUser?.uid.toString()
     REF_STORAGE_ROOT = FirebaseStorage.getInstance().reference
 }
@@ -64,7 +64,7 @@ inline fun putImageToStorage(uri: Uri, path: StorageReference,crossinline functi
 inline fun initUser(crossinline function: () -> Unit) {
     REF_DATA_ROOT.child(NODE_USERS).child(CURRENT_UID)
         .addListenerForSingleValueEvent(AppValueEventListener{
-            USER = it.getValue((User::class.java)) ?:User()
+            USER = it.getValue((UserModel::class.java)) ?:UserModel()
             if (USER.username.isEmpty()){
                 USER.username = CURRENT_UID
             }
@@ -98,6 +98,7 @@ fun initContacts() {
 }
 
 fun updatePhonesToDatabase(arrayContackts: ArrayList<CommonModel>) {
+    //Функция добоаляет номера телефона с id в базу данных
     REF_DATA_ROOT.child(NODE_PHONES).addListenerForSingleValueEvent(AppValueEventListener{
         it.children.forEach { snapshot ->
             arrayContackts.forEach { contack ->
@@ -111,5 +112,10 @@ fun updatePhonesToDatabase(arrayContackts: ArrayList<CommonModel>) {
         }
     })
 }
+//Функция преобразовывает полученные данные из Firebase в модель CommonModel
 fun DataSnapshot.getCommonModel(): CommonModel =
     this.getValue(CommonModel::class.java) ?: CommonModel()
+
+fun DataSnapshot.getUserModel(): UserModel =
+    this.getValue(UserModel::class.java) ?: UserModel()
+
