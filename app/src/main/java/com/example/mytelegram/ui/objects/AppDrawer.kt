@@ -4,11 +4,9 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.mytelegram.R
-import com.example.mytelegram.ui.fragments.ContacktsFragment
+import com.example.mytelegram.ui.fragments.ContactsFragment
 import com.example.mytelegram.ui.fragments.SettingsFragment
 import com.example.mytelegram.utilits.APP_ACTIVITY
 import com.example.mytelegram.utilits.USER
@@ -24,7 +22,6 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
-import java.net.URI
 
 class AppDrawer {
 
@@ -132,7 +129,7 @@ class AppDrawer {
     private fun clickToItem(position:Int){
         when (position) {
             7 -> APP_ACTIVITY.replaceFragment(SettingsFragment())
-            4 -> APP_ACTIVITY.replaceFragment(ContacktsFragment())
+            4 -> APP_ACTIVITY.replaceFragment(ContactsFragment())
         }
     }
 
