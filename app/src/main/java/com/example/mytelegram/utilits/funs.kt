@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.mytelegram.R
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 
 fun showToast(message:String){
@@ -27,29 +25,32 @@ fun AppCompatActivity.replaceFragment(fragment: Fragment, addStack:Boolean = tru
     if (addStack){
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
-            .replace(R.id.dataConteiner,
+            .replace(R.id.data_conteiner,
                 fragment
             ).commit()
     } else {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.dataConteiner,
+            .replace(R.id.data_conteiner,
                 fragment
             ).commit()
     }
 
 }
 fun Fragment.replaceFragment(fragment: Fragment){
+    //Фунция расширения для Fragment, позволяет устанавливать фрагмент
     this.fragmentManager?.beginTransaction()
         ?.addToBackStack(null)
-        ?.replace(R.id.dataConteiner,
+        ?.replace(R.id.data_conteiner,
             fragment
         )?.commit()
 }
 fun hideKeyboard(){
+    //Функция скрывает клавиатуру
     val imm: InputMethodManager = APP_ACTIVITY.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(APP_ACTIVITY.window.decorView.windowToken,0)
 }
 fun ImageView.downloadAndSetImage(url:String){
+    //Функция расширения ImageView,скачивает и устанавливает картинку
     Picasso.get()
         .load(url)
         .fit()

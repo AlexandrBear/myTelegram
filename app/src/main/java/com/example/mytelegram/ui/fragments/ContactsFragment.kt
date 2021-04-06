@@ -60,6 +60,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
                     holder.name.text = contact.fullname
                     holder.status.text = contact.state
                     holder.photo.downloadAndSetImage(contact.photoUrl)
+                    holder.itemView.setOnClickListener { replaceFragment(SingleChatFragment(contact)) }
                 }
 
                 mRefUsers.addValueEventListener(mRefUsersListener)
@@ -80,10 +81,8 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
     override fun onPause() {
         super.onPause()
         mAdapter.stopListening()
-        println()
         mapListeners.forEach{
             it.key.removeEventListener(it.value)
         }
-        println()
     }
 }
