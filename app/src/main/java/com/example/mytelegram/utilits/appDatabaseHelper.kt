@@ -1,7 +1,6 @@
 package com.example.mytelegram.utilits
 
 import android.net.Uri
-import android.provider.ContactsContract
 import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.UserModel
 import com.google.firebase.auth.FirebaseAuth
@@ -10,7 +9,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import java.util.ArrayList
+import java.util.*
 
 lateinit var AUTH: FirebaseAuth
 lateinit var CURRENT_UID: String
@@ -42,20 +41,20 @@ fun initFirebase() {
     REF_STORAGE_ROOT = FirebaseStorage.getInstance().reference
 }
 
-inline fun putUrlToDataBase(url: String,crossinline function: () -> Unit) {
+inline fun putUrlToDataBase(url: String, crossinline function: () -> Unit) {
     REF_DATA_ROOT.child(NODE_USERS).child(CURRENT_UID)
         .child(CHILD_PHOTO_URL).setValue(url)
         .addOnSuccessListener { function() }
         .addOnFailureListener { showToast(it.message.toString()) }
 }
 
-inline fun getUrlFromStorage(path: StorageReference,crossinline function: (url: String) -> Unit) {
+inline fun getUrlFromStorage(path: StorageReference, crossinline function: (url: String) -> Unit) {
     path.downloadUrl
         .addOnSuccessListener { function(it.toString()) }
         .addOnFailureListener { showToast(it.message.toString()) }
 }
 
-inline fun putImageToStorage(uri: Uri, path: StorageReference,crossinline function: () -> Unit) {
+inline fun putImageToStorage(uri: Uri, path: StorageReference, crossinline function: () -> Unit) {
     path.putFile(uri)
         .addOnSuccessListener { function() }
         .addOnFailureListener { showToast(it.message.toString()) }
@@ -63,55 +62,38 @@ inline fun putImageToStorage(uri: Uri, path: StorageReference,crossinline functi
 
 inline fun initUser(crossinline function: () -> Unit) {
     REF_DATA_ROOT.child(NODE_USERS).child(CURRENT_UID)
-        .addListenerForSingleValueEvent(AppValueEventListener{
-            USER = it.getValue((UserModel::class.java)) ?:UserModel()
-            if (USER.username.isEmpty()){
+        .addListenerForSingleValueEvent(AppValueEventListener {
+            USER = it.getValue((UserModel::class.java)) ?: UserModel()
+            if (USER.username.isEmpty()) {
                 USER.username = CURRENT_UID
             }
             function()
         })
 }
-fun initContacts() {
-    if (checkPermission(READ_CONTACTS)){
-        var arrayContackts = arrayListOf<CommonModel>()
-        val cursor = APP_ACTIVITY.contentResolver.query(
-            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-            null,
-            null,
-            null,
-            null
-        )
-        cursor?.let{
-            while (cursor.moveToNext()){
-                val fullName = it.getString(it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-                val phone = it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                val newModel = CommonModel()
-                newModel.fullname = fullName
-                newModel.phone = phone.replace(Regex("[\\s,-]"),"")
-                arrayContackts.add(newModel)
-
-            }
-        }
-        cursor?.close()
-        updatePhonesToDatabase(arrayContackts)
-    }
-}
 
 fun updatePhonesToDatabase(arrayContackts: ArrayList<CommonModel>) {
     //Функция добоаляет номера телефона с id в базу данных
-    REF_DATA_ROOT.child(NODE_PHONES).addListenerForSingleValueEvent(AppValueEventListener{
-        it.children.forEach { snapshot ->
-            arrayContackts.forEach { contack ->
-                if (snapshot.key == contack.phone){
-                    REF_DATA_ROOT.child(NODE_PHONES_CONTACTS).child(CURRENT_UID)
-                        .child(snapshot.value.toString()).child(CHILD_ID)
-                        .setValue(snapshot.value.toString())
-                        .addOnFailureListener { showToast(it.message.toString()) }
+    if (AUTH.currentUser != null) {
+        REF_DATA_ROOT.child(NODE_PHONES).addListenerForSingleValueEvent(AppValueEventListener {
+            it.children.forEach { snapshot ->
+                arrayContackts.forEach { contack ->
+                    if (snapshot.key == contack.phone) {
+                        REF_DATA_ROOT.child(NODE_PHONES_CONTACTS).child(CURRENT_UID)
+                            .child(snapshot.value.toString()).child(CHILD_ID)
+                            .setValue(snapshot.value.toString())
+                            .addOnFailureListener { showToast(it.message.toString()) }
+
+                        REF_DATA_ROOT.child(NODE_PHONES_CONTACTS).child(CURRENT_UID)
+                            .child(snapshot.value.toString()).child(CHILD_FULLNAME)
+                            .setValue(contack.fullname)
+                            .addOnFailureListener { showToast(it.message.toString()) }
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 }
+
 //Функция преобразовывает полученные данные из Firebase в модель CommonModel
 fun DataSnapshot.getCommonModel(): CommonModel =
     this.getValue(CommonModel::class.java) ?: CommonModel()

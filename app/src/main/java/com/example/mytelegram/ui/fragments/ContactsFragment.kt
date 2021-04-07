@@ -35,6 +35,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
         mRecyclerView = contacts_recycle_view
         mRefContacts = REF_DATA_ROOT.child(NODE_PHONES_CONTACTS).child(CURRENT_UID)
 
+        //Настройка для адаптера, где указываем какие данные и откуда получать
         val options = FirebaseRecyclerOptions.Builder<CommonModel>()
             .setQuery(mRefContacts, CommonModel::class.java)
             .build()
@@ -57,10 +58,14 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
 
                 mRefUsersListener = AppValueEventListener {
                     val contact = it.getCommonModel()
-                    holder.name.text = contact.fullname
+
+                    if (contact.fullname.isEmpty()){
+                        holder.name.text = model.fullname
+                    }else holder.name.text = contact.fullname
+
                     holder.status.text = contact.state
                     holder.photo.downloadAndSetImage(contact.photoUrl)
-                    holder.itemView.setOnClickListener { replaceFragment(SingleChatFragment(contact)) }
+                    holder.itemView.setOnClickListener { replaceFragment(SingleChatFragment(model)) }
                 }
 
                 mRefUsers.addValueEventListener(mRefUsersListener)
