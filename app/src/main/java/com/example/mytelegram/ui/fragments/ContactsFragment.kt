@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mytelegram.R
 import com.example.mytelegram.models.CommonModel
+import com.example.mytelegram.ui.fragments.single_chat.SingleChatFragment
 import com.example.mytelegram.utilits.*
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -39,6 +40,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
         val options = FirebaseRecyclerOptions.Builder<CommonModel>()
             .setQuery(mRefContacts, CommonModel::class.java)
             .build()
+        //Адаптер принимает данные, отображает в холдере
         mAdapter = object : FirebaseRecyclerAdapter<CommonModel, ContactsHolder>(options) {
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsHolder {
@@ -65,7 +67,11 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
 
                     holder.status.text = contact.state
                     holder.photo.downloadAndSetImage(contact.photoUrl)
-                    holder.itemView.setOnClickListener { replaceFragment(SingleChatFragment(model)) }
+                    holder.itemView.setOnClickListener { replaceFragment(
+                        SingleChatFragment(
+                            model
+                        )
+                    ) }
                 }
 
                 mRefUsers.addValueEventListener(mRefUsersListener)
