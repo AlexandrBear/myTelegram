@@ -34,10 +34,10 @@ class EnterCodeFragment(val phoneNumber: String, val id: String) :
                 dateMap[CHIlD_PHONE] = phoneNumber
                 dateMap[CHILD_USERNAME] = uid
 
-                REF_DATA_ROOT.child(NODE_PHONES).child(phoneNumber).setValue(uid)
+                REF_DATABASE_ROOT.child(NODE_PHONES).child(phoneNumber).setValue(uid)
                     .addOnFailureListener { showToast(it.message.toString()) }
                     .addOnSuccessListener {
-                        REF_DATA_ROOT.child(NODE_USERS).child(uid).updateChildren(dateMap)
+                        REF_DATABASE_ROOT.child(NODE_USERS).child(uid).updateChildren(dateMap)
                             .addOnSuccessListener {
                                 showToast("Добро пожаловать")
                                 (activity as RegisterActivity).replaceActivity(MainActivity())
