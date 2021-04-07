@@ -5,14 +5,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.example.mytelegram.activities.RegisterActivity
+import com.example.mytelegram.database.AUTH
+import com.example.mytelegram.database.initFirebase
+import com.example.mytelegram.database.initUser
 import com.example.mytelegram.databinding.ActivityMainBinding
-import com.example.mytelegram.ui.fragments.ChatsFragment
+import com.example.mytelegram.ui.fragments.MainFragment
+import com.example.mytelegram.ui.fragments.register.EnterPhoneNumberFragment
 import com.example.mytelegram.ui.objects.AppDrawer
 import com.example.mytelegram.utilits.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -40,15 +42,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun initFunc() {
         /*Функция инициализирует функциональность приложения*/
+        setSupportActionBar(mToolbar)
         if (AUTH.currentUser != null) {
-            setSupportActionBar(mToolbar)
             mAppDrawer.create()
-            replaceFragment(ChatsFragment(), false)
+            replaceFragment(MainFragment(), false)
         } else {
-            replaceActivity(RegisterActivity())
+            replaceFragment(EnterPhoneNumberFragment(),false)
         }
     }
 

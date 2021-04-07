@@ -6,9 +6,10 @@ import android.provider.ContactsContract
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.mytelegram.MainActivity
 import com.example.mytelegram.R
+import com.example.mytelegram.database.updatePhonesToDatabase
 import com.example.mytelegram.models.CommonModel
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
@@ -21,41 +22,32 @@ fun showToast(message: String) {
     Toast.makeText(APP_ACTIVITY, message, Toast.LENGTH_SHORT).show()
 }
 
-fun AppCompatActivity.replaceActivity(activity: AppCompatActivity) {
+fun restartActivity() {
     //Функция расширения для AppCompactActivity, позволяет запускать активити
-    val intent = Intent(this, activity::class.java)
-    startActivity(intent)
-    this.finish()
+    val intent = Intent(APP_ACTIVITY, MainActivity::class.java)
+    APP_ACTIVITY.startActivity(intent)
+    APP_ACTIVITY.finish()
 }
 
-fun AppCompatActivity.replaceFragment(fragment: Fragment, addStack: Boolean = true) {
+fun replaceFragment(fragment: Fragment, addStack: Boolean = true) {
     //Функция расширения для AppCompactActivity, позволяет устанавливать фрашменты
     if (addStack) {
-        supportFragmentManager.beginTransaction()
+        APP_ACTIVITY.supportFragmentManager.beginTransaction()
             .addToBackStack(null)
             .replace(
                 R.id.data_conteiner,
                 fragment
             ).commit()
     } else {
-        supportFragmentManager.beginTransaction()
+        APP_ACTIVITY.supportFragmentManager.beginTransaction()
             .replace(
                 R.id.data_conteiner,
                 fragment
             ).commit()
     }
-
 }
 
-fun Fragment.replaceFragment(fragment: Fragment) {
-    //Фунция расширения для Fragment, позволяет устанавливать фрагмент
-    this.fragmentManager?.beginTransaction()
-        ?.addToBackStack(null)
-        ?.replace(
-            R.id.data_conteiner,
-            fragment
-        )?.commit()
-}
+
 
 fun hideKeyboard() {
     //Функция скрывает клавиатуру

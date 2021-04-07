@@ -1,5 +1,7 @@
 package com.example.mytelegram.utilits
 
+import com.example.mytelegram.database.*
+
 enum class AppStates(val state:String) {
     //Класс перечислений состояний приложения
     ONLINE("в сети"),
@@ -10,7 +12,11 @@ enum class AppStates(val state:String) {
         fun updateState(appStates: AppStates){
             //Функцтя принимает состояние и записывает в базу данных
             if (AUTH.currentUser!=null){
-                REF_DATABASE_ROOT.child(NODE_USERS).child(CURRENT_UID).child(CHILD_STATE)
+                REF_DATABASE_ROOT.child(
+                    NODE_USERS
+                ).child(CURRENT_UID).child(
+                    CHILD_STATE
+                )
                     .setValue(appStates.state)
                     .addOnSuccessListener { USER.state = appStates.state }
                     .addOnFailureListener { showToast(it.message.toString()) }

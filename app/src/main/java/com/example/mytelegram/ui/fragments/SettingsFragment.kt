@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import com.example.mytelegram.R
-import com.example.mytelegram.activities.RegisterActivity
+import com.example.mytelegram.database.*
 import com.example.mytelegram.utilits.*
 import com.google.firebase.storage.StorageReference
 import com.theartofdev.edmodo.cropper.CropImage
@@ -56,7 +56,7 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
             R.id.settings_menu_exit -> {
                 AppStates.updateState(AppStates.OFFLINE)
                 AUTH.signOut()
-                (APP_ACTIVITY).replaceActivity(RegisterActivity())
+                restartActivity()
             }
             R.id.settings_menu_change_name -> replaceFragment(ChangeNameFragment())
         }
@@ -70,7 +70,9 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
             && resultCode == RESULT_OK && data != null
         ) {
             val uri: Uri = CropImage.getActivityResult(data).uri
-            val path: StorageReference = REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE)
+            val path: StorageReference = REF_STORAGE_ROOT.child(
+                FOLDER_PROFILE_IMAGE
+            )
                 .child(CURRENT_UID)
             putImageToStorage(uri, path) {
                 getUrlFromStorage(path) {

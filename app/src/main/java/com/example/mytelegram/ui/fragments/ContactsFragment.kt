@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mytelegram.R
+import com.example.mytelegram.database.*
 import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.ui.fragments.single_chat.SingleChatFragment
 import com.example.mytelegram.utilits.*
@@ -34,7 +35,9 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
 
     private fun initRecycleView() {
         mRecyclerView = contacts_recycle_view
-        mRefContacts = REF_DATABASE_ROOT.child(NODE_PHONES_CONTACTS).child(CURRENT_UID)
+        mRefContacts = REF_DATABASE_ROOT.child(
+            NODE_PHONES_CONTACTS
+        ).child(CURRENT_UID)
 
         //Настройка для адаптера, где указываем какие данные и откуда получать
         val options = FirebaseRecyclerOptions.Builder<CommonModel>()
@@ -56,7 +59,9 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
                 position: Int,
                 model: CommonModel
             ) {
-                mRefUsers = REF_DATABASE_ROOT.child(NODE_USERS).child(model.id)
+                mRefUsers = REF_DATABASE_ROOT.child(
+                    NODE_USERS
+                ).child(model.id)
 
                 mRefUsersListener = AppValueEventListener {
                     val contact = it.getCommonModel()

@@ -9,7 +9,7 @@ import com.example.mytelegram.R
 import com.example.mytelegram.ui.fragments.ContactsFragment
 import com.example.mytelegram.ui.fragments.SettingsFragment
 import com.example.mytelegram.utilits.APP_ACTIVITY
-import com.example.mytelegram.utilits.USER
+import com.example.mytelegram.database.USER
 import com.example.mytelegram.utilits.downloadAndSetImage
 import com.example.mytelegram.utilits.replaceFragment
 import com.mikepenz.materialdrawer.AccountHeader
@@ -128,8 +128,8 @@ class AppDrawer {
 
     private fun clickToItem(position:Int){
         when (position) {
-            7 -> APP_ACTIVITY.replaceFragment(SettingsFragment())
-            4 -> APP_ACTIVITY.replaceFragment(ContactsFragment())
+            7 -> replaceFragment(SettingsFragment())
+            4 -> replaceFragment(ContactsFragment())
         }
     }
 
