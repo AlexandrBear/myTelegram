@@ -23,6 +23,7 @@ class EnterCodeFragment(val phoneNumber: String, val id: String) :
     }
 
     private fun enterCode() {
+        // Функция проверяет код, если все нормально, производит создание информации о пользователе в базе данных
         val code = register_input_code.text.toString()
         val credential = PhoneAuthProvider.getCredential(id, code)
         AUTH.signInWithCredential(credential).addOnCompleteListener { task ->
@@ -31,22 +32,32 @@ class EnterCodeFragment(val phoneNumber: String, val id: String) :
                 val dateMap: MutableMap<String, Any> = mutableMapOf<String, Any>()
                 dateMap[CHILD_ID] = uid
                 dateMap[CHIlD_PHONE] = phoneNumber
-                dateMap[CHILD_USERNAME] = uid
 
-                REF_DATABASE_ROOT.child(
-                    NODE_PHONES
-                ).child(phoneNumber).setValue(uid)
-                    .addOnFailureListener { showToast(it.message.toString()) }
-                    .addOnSuccessListener {
+
+                REF_DATABASE_ROOT.child(NODE_USERS).child(uid)
+                    .addListenerForSingleValueEvent(AppValueEventListener{
+
+                        if (!it.hasChild(CHILD_USERNAME)){
+                            dateMap[CHILD_USERNAME] = uid
+                        }
+
                         REF_DATABASE_ROOT.child(
-                            NODE_USERS
-                        ).child(uid).updateChildren(dateMap)
+                            NODE_PHONES
+                        ).child(phoneNumber).setValue(uid)
+                            .addOnFailureListener { showToast(it.message.toString()) }
                             .addOnSuccessListener {
-                                showToast("Добро пожаловать")
-                                restartActivity()
+                                REF_DATABASE_ROOT.child(
+                                    NODE_USERS
+                                ).child(uid).updateChildren(dateMap)
+                                    .addOnSuccessListener {
+                                        showToast("Добро пожаловать")
+                                        restartActivity()
+                                    }
+                                    .addOnFailureListener {showToast(it.message.toString())}
                             }
-                            .addOnFailureListener {showToast(it.message.toString())}
-                    }
+                    })
+
+
             } else showToast(task.exception?.message.toString())
         }
     }
