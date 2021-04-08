@@ -1,5 +1,8 @@
 package com.example.mytelegram.ui.fragments.single_chat
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,10 +14,9 @@ import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.UserModel
 import com.example.mytelegram.ui.fragments.BaseFragment
 import com.example.mytelegram.utilits.*
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.storage.StorageReference
+import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_single_chat.*
 import kotlinx.android.synthetic.main.toolbar_info.view.*
@@ -30,7 +32,7 @@ class SingleChatFragment(private val contact: CommonModel) :
     private lateinit var mAdapter: SingleChatAdapter
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mMessagesListener: AppChildEventListener
-    private var mCountMessages = 15
+    private var mCountMessages = 10
     private var mIsScrolling = false
     private var mSmoothScrollToPosition = true
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
@@ -47,6 +49,25 @@ class SingleChatFragment(private val contact: CommonModel) :
     private fun initFields() {
         mSwipeRefreshLayout = chat_swipe_refresh
         mLayoutManager = LinearLayoutManager(this.context)
+        chat_input_massage.addTextChangedListener(AppTextWatcher{
+            val string = chat_input_massage.text.toString()
+            if (string.isEmpty()){
+                chat_btn_send_message.visibility = View.GONE
+                chat_btn_attach.visibility = View.VISIBLE
+            } else {
+                chat_btn_send_message.visibility = View.VISIBLE
+                chat_btn_attach.visibility = View.GONE
+            }
+        })
+
+        chat_btn_attach.setOnClickListener { attachFile() }
+    }
+
+    private fun attachFile() {
+        CropImage.activity()
+            .setAspectRatio(1, 1)
+            .setRequestedSize(250, 250)
+            .start(APP_ACTIVITY, this)
     }
 
     private fun initRecycleView() {
@@ -142,6 +163,29 @@ class SingleChatFragment(private val contact: CommonModel) :
         mToolbarInfo.toolbar_chat_image.downloadAndSetImage(mReceivingUser.photoUrl)
         mToolbarInfo.toolbar_chat_status.text = mReceivingUser.state
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        //Активномть которая запускается для получения картинки для фото пользователя
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE
+            && resultCode == Activity.RESULT_OK && data != null
+        ) {
+            val uri: Uri = CropImage.getActivityResult(data).uri
+            val messageKey = REF_DATABASE_ROOT.child(NODE_MESSAGES).child(CURRENT_UID)
+                .child(contact.id).push().key.toString()
+
+            val path: StorageReference = REF_STORAGE_ROOT
+                .child(FOLDER_MESSAGE_IMAGE)
+                .child(messageKey)
+            putImageToStorage(uri, path) {
+                getUrlFromStorage(path) {
+                    sendMessageAsImage(contact.id,it,messageKey)
+                }
+            }
+        }
+    }
+
+
 
     override fun onPause() {
         super.onPause()
