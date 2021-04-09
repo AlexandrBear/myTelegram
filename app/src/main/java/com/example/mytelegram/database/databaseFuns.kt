@@ -6,56 +6,28 @@ import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.UserModel
 import com.example.mytelegram.utilits.APP_ACTIVITY
 import com.example.mytelegram.utilits.AppValueEventListener
-import com.example.mytelegram.utilits.TYPE_MESSAGE_IMAGE
 import com.example.mytelegram.utilits.showToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import java.util.*
-
-lateinit var AUTH: FirebaseAuth
-lateinit var CURRENT_UID: String
-lateinit var REF_DATABASE_ROOT: DatabaseReference
-lateinit var REF_STORAGE_ROOT: StorageReference
-lateinit var USER: UserModel
-
-const val TYPE_TEXT = "text"
-
-const val NODE_USERS = "users"
-const val NODE_MESSAGES = "messages"
-const val NODE_USERNAMES = "usernames"
-const val NODE_PHONES = "phones"
-const val NODE_PHONES_CONTACTS = "phones_contacts"
-const val FOLDER_PROFILE_IMAGE = "profile_image"
-const val FOLDER_MESSAGE_IMAGE = "message_image"
-
-
-const val CHILD_ID = "id"
-const val CHIlD_PHONE = "phone"
-const val CHILD_USERNAME = "username"
-const val CHILD_FULLNAME = "fullname"
-const val CHILD_BIO = "bio"
-const val CHILD_PHOTO_URL = "photoUrl"
-const val CHILD_STATE = "state"
-const val CHILD_TEXT = "text"
-const val CHILD_TYPE = "type"
-const val CHILD_FROM = "from"
-const val CHILD_TIMESTAMP = "timeStamp"
-const val CHILD_FILE_URL = "fileUrl"
+import java.util.ArrayList
 
 fun initFirebase() {
-    AUTH = FirebaseAuth.getInstance()
+    // Инициализация базы данных Firebase
+    AUTH =
+        FirebaseAuth.getInstance()
     REF_DATABASE_ROOT = FirebaseDatabase.getInstance().reference
-    USER = UserModel()
+    USER =
+        UserModel()
     CURRENT_UID = AUTH.currentUser?.uid.toString()
     REF_STORAGE_ROOT = FirebaseStorage.getInstance().reference
 }
 
 inline fun putUrlToDataBase(url: String, crossinline function: () -> Unit) {
+    // Функция высшего порядка, отправляет полученный URL в базу данных
     REF_DATABASE_ROOT.child(NODE_USERS).child(
         CURRENT_UID
     )
@@ -65,12 +37,13 @@ inline fun putUrlToDataBase(url: String, crossinline function: () -> Unit) {
 }
 
 inline fun getUrlFromStorage(path: StorageReference, crossinline function: (url: String) -> Unit) {
+    // Функция высшего порядка, получает URL картинки из хранилища
     path.downloadUrl
         .addOnSuccessListener { function(it.toString()) }
         .addOnFailureListener { showToast(it.message.toString()) }
 }
 
-inline fun putImageToStorage(uri: Uri, path: StorageReference, crossinline function: () -> Unit) {
+inline fun putFileToStorage(uri: Uri, path: StorageReference, crossinline function: () -> Unit) {
     path.putFile(uri)
         .addOnSuccessListener { function() }
         .addOnFailureListener { showToast(it.message.toString()) }
@@ -82,7 +55,8 @@ inline fun initUser(crossinline function: () -> Unit) {
     )
         .addListenerForSingleValueEvent(AppValueEventListener {
             USER =
-                it.getValue((UserModel::class.java)) ?: UserModel()
+                it.getValue((UserModel::class.java))
+                    ?: UserModel()
             if (USER.username.isEmpty()) {
                 USER.username =
                     CURRENT_UID
@@ -149,7 +123,8 @@ fun sendMessage(message: String, recevingUserID: String, typeText: String, funct
     mapMessage[CHILD_TEXT] = message
     mapMessage[CHILD_ID] = messageKey.toString()
 
-    mapMessage[CHILD_TIMESTAMP] = ServerValue.TIMESTAMP
+    mapMessage[CHILD_TIMESTAMP] =
+        ServerValue.TIMESTAMP
 
     val mapDialog = hashMapOf<String, Any>()
     mapDialog["$refDialogUser/$messageKey"] = mapMessage
@@ -172,7 +147,11 @@ fun updateCurrentUsername(newUserName: String) {
         .setValue(newUserName)
         .addOnCompleteListener {
             if (it.isSuccessful) {
-                showToast(APP_ACTIVITY.getString(R.string.toast_data_update))
+                showToast(
+                    APP_ACTIVITY.getString(
+                        R.string.toast_data_update
+                    )
+                )
                 deleteOldUsername(newUserName)
             } else {
                 showToast(it.exception?.message.toString())
@@ -186,7 +165,11 @@ private fun deleteOldUsername(newUserName: String) {
         NODE_USERNAMES
     ).child(USER.username).removeValue()
         .addOnSuccessListener {
-            showToast(APP_ACTIVITY.getString(R.string.toast_data_update))
+            showToast(
+                APP_ACTIVITY.getString(
+                    R.string.toast_data_update
+                )
+            )
             APP_ACTIVITY.supportFragmentManager.popBackStack()
             USER.username = newUserName
         }.addOnFailureListener { showToast(it.message.toString()) }
@@ -199,7 +182,11 @@ fun setBioToDatabase(newBio: String) {
         .child(CHILD_BIO)
         .setValue(newBio)
         .addOnSuccessListener {
-            showToast(APP_ACTIVITY.getString(R.string.toast_data_update))
+            showToast(
+                APP_ACTIVITY.getString(
+                    R.string.toast_data_update
+                )
+            )
             USER.bio = newBio
             APP_ACTIVITY.supportFragmentManager.popBackStack()
         }.addOnFailureListener { showToast(it.message.toString()) }
@@ -212,25 +199,36 @@ fun setNameToDatabase(fullname: String) {
         .child(CHILD_FULLNAME)
         .setValue(fullname)
         .addOnSuccessListener {
-            showToast(APP_ACTIVITY.getString(R.string.toast_data_update))
+            showToast(
+                APP_ACTIVITY.getString(
+                    R.string.toast_data_update
+                )
+            )
             USER.fullname = fullname
             APP_ACTIVITY.mAppDrawer.updateHeader()
             APP_ACTIVITY.supportFragmentManager.popBackStack()
         }.addOnFailureListener { showToast(it.message.toString()) }
 }
 
-fun sendMessageAsImage(recevingUserID: String, imageUrl: String, messageKey: String) {
+fun sendMessageAsFile(
+    recevingUserID: String,
+    fileUrl: String,
+    messageKey: String,
+    typeMessage: String
+) {
 
     val refDialogUser = "$NODE_MESSAGES/$CURRENT_UID/$recevingUserID"
     val refDialogReceivengUser = "$NODE_MESSAGES/$recevingUserID/$CURRENT_UID"
 
 
     val mapMessage = hashMapOf<String, Any>()
-    mapMessage[CHILD_FROM] = CURRENT_UID
-    mapMessage[CHILD_TYPE] = TYPE_MESSAGE_IMAGE
+    mapMessage[CHILD_FROM] =
+        CURRENT_UID
+    mapMessage[CHILD_TYPE] = typeMessage
     mapMessage[CHILD_ID] = messageKey
-    mapMessage[CHILD_TIMESTAMP] = ServerValue.TIMESTAMP
-    mapMessage[CHILD_FILE_URL] = imageUrl
+    mapMessage[CHILD_TIMESTAMP] =
+        ServerValue.TIMESTAMP
+    mapMessage[CHILD_FILE_URL] = fileUrl
 
     val mapDialog = hashMapOf<String, Any>()
     mapDialog["$refDialogUser/$messageKey"] = mapMessage
@@ -241,9 +239,23 @@ fun sendMessageAsImage(recevingUserID: String, imageUrl: String, messageKey: Str
         .addOnFailureListener { showToast(it.message.toString()) }
 }
 
-fun getMessageKey(id: String) = REF_DATABASE_ROOT.child(NODE_MESSAGES).child(CURRENT_UID)
+fun getMessageKey(id: String) = REF_DATABASE_ROOT.child(
+    NODE_MESSAGES
+).child(CURRENT_UID)
     .child(id).push().key.toString()
 
-fun uploadFileToStorage(uri: Uri, messageKey: String) {
-    showToast("Record OK")
+fun uploadFileToStorage(uri: Uri, messageKey: String, receivedID: String, typeMessage: String) {
+    val path: StorageReference = REF_STORAGE_ROOT.child(
+        FOLDER_FILES
+    ).child(messageKey)
+    putFileToStorage(uri, path) {
+        getUrlFromStorage(path) {
+            sendMessageAsFile(
+                receivedID,
+                it,
+                messageKey,
+                typeMessage
+            )
+        }
+    }
 }

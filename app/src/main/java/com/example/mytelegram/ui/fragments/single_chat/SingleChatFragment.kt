@@ -16,9 +16,9 @@ import com.example.mytelegram.database.*
 import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.UserModel
 import com.example.mytelegram.ui.fragments.BaseFragment
+import com.example.mytelegram.ui.fragments.message_recycler_view.views.AppViewFactoty
 import com.example.mytelegram.utilits.*
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.storage.StorageReference
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_single_chat.*
@@ -91,7 +91,8 @@ class SingleChatFragment(private val contact: CommonModel) :
                         chat_input_massage.setText("")
                         chat_btn_voice.colorFilter = null
                         mAppVoiceRecorder.stopRecord { file, messageKey ->
-                            uploadFileToStorage(Uri.fromFile(file), messageKey)
+                            uploadFileToStorage(Uri.fromFile(file), messageKey,contact.id, TYPE_MESSAGE_VOICE)
+                            mSmoothScrollToPosition = true
                         }
                     }
                 }
@@ -124,11 +125,11 @@ class SingleChatFragment(private val contact: CommonModel) :
             val message = it.getCommonModel()
 
             if (mSmoothScrollToPosition) {
-                mAdapter.addItemToBottom(message) {
+                mAdapter.addItemToBottom(AppViewFactoty.getView(message)) {
                     mRecyclerView.smoothScrollToPosition(mAdapter.itemCount)
                 }
             } else {
-                mAdapter.addItemToTop(message) {
+                mAdapter.addItemToTop(AppViewFactoty.getView(message)) {
                     mSwipeRefreshLayout.isRefreshing = false
                 }
             }
@@ -211,16 +212,8 @@ class SingleChatFragment(private val contact: CommonModel) :
         ) {
             val uri: Uri = CropImage.getActivityResult(data).uri
             val messageKey = getMessageKey(contact.id)
-
-            val path: StorageReference = REF_STORAGE_ROOT
-                .child(FOLDER_MESSAGE_IMAGE)
-                .child(messageKey)
-            putImageToStorage(uri, path) {
-                getUrlFromStorage(path) {
-                    sendMessageAsImage(contact.id, it, messageKey)
-                    mSmoothScrollToPosition = true
-                }
-            }
+            uploadFileToStorage(uri, messageKey,contact.id, TYPE_MESSAGE_IMAGE)
+            mSmoothScrollToPosition = true
         }
     }
 

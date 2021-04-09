@@ -7,6 +7,8 @@ import com.example.mytelegram.utilits.*
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.android.synthetic.main.fragment_enter_code.*
 
+//Фрагмент для ввода кода подтверждения оегистрации
+
 class EnterCodeFragment(val phoneNumber: String, val id: String) :
     Fragment(R.layout.fragment_enter_code) {
 
