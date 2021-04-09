@@ -43,6 +43,7 @@ class SingleChatFragment(private val contact: CommonModel) :
     private var mSmoothScrollToPosition = true
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mLayoutManager: LinearLayoutManager
+    private lateinit var mAppVoiceRecorder: AppVoiceRecorder
 
     override fun onResume() {
         super.onResume()
@@ -54,6 +55,7 @@ class SingleChatFragment(private val contact: CommonModel) :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initFields() {
+        mAppVoiceRecorder = AppVoiceRecorder()
         mSwipeRefreshLayout = chat_swipe_refresh
         mLayoutManager = LinearLayoutManager(this.context)
         chat_input_massage.addTextChangedListener(AppTextWatcher {
@@ -79,12 +81,18 @@ class SingleChatFragment(private val contact: CommonModel) :
                         //TODO record
                         chat_input_massage.setText("Запись")
                         chat_btn_voice.setColorFilter(
-                            ContextCompat.getColor(APP_ACTIVITY,R.color.primary))
+                            ContextCompat.getColor(APP_ACTIVITY, R.color.primary)
+                        )
+                        val messageKey = getMessageKey(contact.id)
+                        mAppVoiceRecorder.startRecord(messageKey)
 
                     } else if (event.action == MotionEvent.ACTION_UP) {
                         // TODO stop record
                         chat_input_massage.setText("")
                         chat_btn_voice.colorFilter = null
+                        mAppVoiceRecorder.stopRecord { file, messageKey ->
+                            uploadFileToStorage(Uri.fromFile(file), messageKey)
+                        }
                     }
                 }
                 true
@@ -92,6 +100,7 @@ class SingleChatFragment(private val contact: CommonModel) :
 
         }
     }
+
 
     private fun attachFile() {
         CropImage.activity()
@@ -201,8 +210,7 @@ class SingleChatFragment(private val contact: CommonModel) :
             && resultCode == Activity.RESULT_OK && data != null
         ) {
             val uri: Uri = CropImage.getActivityResult(data).uri
-            val messageKey = REF_DATABASE_ROOT.child(NODE_MESSAGES).child(CURRENT_UID)
-                .child(contact.id).push().key.toString()
+            val messageKey = getMessageKey(contact.id)
 
             val path: StorageReference = REF_STORAGE_ROOT
                 .child(FOLDER_MESSAGE_IMAGE)
@@ -216,11 +224,15 @@ class SingleChatFragment(private val contact: CommonModel) :
         }
     }
 
-
     override fun onPause() {
         super.onPause()
         mToolbarInfo.visibility = View.GONE
         mRefUser.removeEventListener(mListenerInfoToolbar)
         mRefMessages.removeEventListener(mMessagesListener)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mAppVoiceRecorder.releaseRecorder()
     }
 }
