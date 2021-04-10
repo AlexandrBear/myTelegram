@@ -1,8 +1,7 @@
-package com.example.mytelegram.ui.fragments
+package com.example.mytelegram.ui.skreens
 
 import com.example.mytelegram.R
 import com.example.mytelegram.database.*
-import com.example.mytelegram.utilits.showToast
 import kotlinx.android.synthetic.main.fragment_change_bio.*
 
 

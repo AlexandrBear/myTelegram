@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.ImageView
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.mytelegram.R
-import com.example.mytelegram.ui.fragments.ContactsFragment
-import com.example.mytelegram.ui.fragments.SettingsFragment
+import com.example.mytelegram.ui.skreens.ContactsFragment
+import com.example.mytelegram.ui.skreens.SettingsFragment
 import com.example.mytelegram.utilits.APP_ACTIVITY
 import com.example.mytelegram.database.USER
 import com.example.mytelegram.utilits.downloadAndSetImage

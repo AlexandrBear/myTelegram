@@ -1,4 +1,4 @@
-package com.example.mytelegram.ui.fragments.single_chat
+package com.example.mytelegram.ui.skreens.single_chat
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,8 +15,8 @@ import com.example.mytelegram.R
 import com.example.mytelegram.database.*
 import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.UserModel
-import com.example.mytelegram.ui.fragments.BaseFragment
-import com.example.mytelegram.ui.fragments.message_recycler_view.views.AppViewFactoty
+import com.example.mytelegram.ui.skreens.BaseFragment
+import com.example.mytelegram.ui.message_recycler_view.views.AppViewFactoty
 import com.example.mytelegram.utilits.*
 import com.google.firebase.database.DatabaseReference
 import com.theartofdev.edmodo.cropper.CropImage
@@ -227,5 +227,6 @@ class SingleChatFragment(private val contact: CommonModel) :
     override fun onDestroyView() {
         super.onDestroyView()
         mAppVoiceRecorder.releaseRecorder()
+        mAdapter.onDestroy()
     }
 }

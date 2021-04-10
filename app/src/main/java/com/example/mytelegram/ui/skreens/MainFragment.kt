@@ -1,4 +1,4 @@
-package com.example.mytelegram.ui.fragments
+package com.example.mytelegram.ui.skreens
 
 import androidx.fragment.app.Fragment
 import com.example.mytelegram.R

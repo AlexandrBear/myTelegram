@@ -13,7 +13,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import java.util.ArrayList
+import java.io.File
+import java.util.*
 
 fun initFirebase() {
     // Инициализация базы данных Firebase
@@ -258,4 +259,11 @@ fun uploadFileToStorage(uri: Uri, messageKey: String, receivedID: String, typeMe
             )
         }
     }
+}
+
+fun getFileFromStorage(mFile: File, fileUrl: String, function: () -> Unit) {
+    val path = REF_STORAGE_ROOT.storage.getReferenceFromUrl(fileUrl)
+    path.getFile(mFile)
+        .addOnSuccessListener { function() }
+        .addOnFailureListener { showToast(it.message.toString()) }
 }

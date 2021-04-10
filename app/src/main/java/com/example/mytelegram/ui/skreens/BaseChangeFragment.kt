@@ -1,4 +1,4 @@
-package com.example.mytelegram.ui.fragments
+package com.example.mytelegram.ui.skreens
 
 import android.view.Menu
 import android.view.MenuInflater
@@ -6,7 +6,6 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.example.mytelegram.MainActivity
 import com.example.mytelegram.R
-import com.example.mytelegram.utilits.APP_ACTIVITY
 import com.example.mytelegram.utilits.hideKeyboard
 
 

@@ -1,4 +1,4 @@
-package com.example.mytelegram.ui.fragments.message_recycler_view.views
+package com.example.mytelegram.ui.message_recycler_view.views
 
 data class ViewVoiceMessage(
     override val id: String,

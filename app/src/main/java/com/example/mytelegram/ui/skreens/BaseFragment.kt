@@ -1,7 +1,6 @@
-package com.example.mytelegram.ui.fragments
+package com.example.mytelegram.ui.skreens
 
 import androidx.fragment.app.Fragment
-import com.example.mytelegram.MainActivity
 import com.example.mytelegram.utilits.APP_ACTIVITY
 
 open class BaseFragment(layout: Int) : Fragment(layout) {
