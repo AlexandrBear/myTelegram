@@ -1,6 +1,7 @@
 package com.example.mytelegram.ui.message_recycler_view.views
 
 import com.example.mytelegram.models.CommonModel
+import com.example.mytelegram.utilits.TYPE_MESSAGE_FILE
 import com.example.mytelegram.utilits.TYPE_MESSAGE_IMAGE
 import com.example.mytelegram.utilits.TYPE_MESSAGE_VOICE
 
@@ -19,6 +20,13 @@ class AppViewFactoty {
                     message.from,
                     message.timeStamp.toString(),
                     message.fileUrl
+                )
+                TYPE_MESSAGE_FILE -> ViewFileMessage(
+                    message.id,
+                    message.from,
+                    message.timeStamp.toString(),
+                    message.fileUrl,
+                    message.text
                 )
                 else -> ViewTextMessage(
                     message.id,
