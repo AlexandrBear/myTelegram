@@ -1,5 +1,6 @@
-package com.example.mytelegram.ui.skreens
+package com.example.mytelegram.ui.skreens.contacts
 
+import com.example.mytelegram.ui.skreens.base.BaseFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +51,9 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
                 //Запускается тогда когда адаптер полчает доступ к ViewGroup
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.contact_item, parent, false)
-                return ContactsHolder(view)
+                return ContactsHolder(
+                    view
+                )
             }
 
             //Заполняет holder
@@ -87,7 +90,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contackts) {
         mAdapter.startListening()
     }
 
-    //Холден для захвата ViewGroup
+    //Холдер для захвата ViewGroup
     class ContactsHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.contact_fullname
         val status: TextView = view.contact_status

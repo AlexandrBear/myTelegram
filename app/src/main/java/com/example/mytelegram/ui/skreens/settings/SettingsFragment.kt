@@ -1,5 +1,6 @@
 package com.example.mytelegram.ui.skreens.settings
 
+import com.example.mytelegram.ui.skreens.base.BaseFragment
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
@@ -8,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import com.example.mytelegram.R
 import com.example.mytelegram.database.*
-import com.example.mytelegram.ui.skreens.BaseFragment
 import com.example.mytelegram.utilits.*
 import com.google.firebase.storage.StorageReference
 import com.theartofdev.edmodo.cropper.CropImage

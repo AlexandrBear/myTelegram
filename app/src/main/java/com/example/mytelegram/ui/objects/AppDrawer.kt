@@ -6,10 +6,11 @@ import android.view.View
 import android.widget.ImageView
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.mytelegram.R
-import com.example.mytelegram.ui.skreens.ContactsFragment
+import com.example.mytelegram.database.USER
+import com.example.mytelegram.ui.skreens.contacts.ContactsFragment
+import com.example.mytelegram.ui.skreens.groups.AddContactsFragment
 import com.example.mytelegram.ui.skreens.settings.SettingsFragment
 import com.example.mytelegram.utilits.APP_ACTIVITY
-import com.example.mytelegram.database.USER
 import com.example.mytelegram.utilits.downloadAndSetImage
 import com.example.mytelegram.utilits.replaceFragment
 import com.mikepenz.materialdrawer.AccountHeader
@@ -22,6 +23,8 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
+
+// Обьект реализующий боковое меню Navigation Drawer
 
 class AppDrawer {
 
@@ -128,6 +131,7 @@ class AppDrawer {
 
     private fun clickToItem(position:Int){
         when (position) {
+            1 -> replaceFragment(AddContactsFragment())
             7 -> replaceFragment(SettingsFragment())
             4 -> replaceFragment(ContactsFragment())
         }

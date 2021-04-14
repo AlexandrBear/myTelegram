@@ -1,7 +1,6 @@
 package com.example.mytelegram.ui.skreens.single_chat
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.view.*
@@ -14,10 +13,9 @@ import com.example.mytelegram.R
 import com.example.mytelegram.database.*
 import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.UserModel
-import com.example.mytelegram.ui.skreens.BaseFragment
+import com.example.mytelegram.ui.skreens.base.BaseFragment
 import com.example.mytelegram.ui.message_recycler_view.views.AppViewFactoty
 import com.example.mytelegram.ui.skreens.main_list.MainListFragment
-import com.example.mytelegram.ui.skreens.settings.ChangeNameFragment
 import com.example.mytelegram.utilits.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.DatabaseReference
