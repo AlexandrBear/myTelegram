@@ -16,6 +16,7 @@ import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.models.UserModel
 import com.example.mytelegram.ui.skreens.BaseFragment
 import com.example.mytelegram.ui.message_recycler_view.views.AppViewFactoty
+import com.example.mytelegram.ui.skreens.main_list.MainListFragment
 import com.example.mytelegram.ui.skreens.settings.ChangeNameFragment
 import com.example.mytelegram.utilits.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -97,7 +98,12 @@ class SingleChatFragment(private val contact: CommonModel) :
                         chat_input_massage.setText("")
                         chat_btn_voice.colorFilter = null
                         mAppVoiceRecorder.stopRecord { file, messageKey ->
-                            uploadFileToStorage(Uri.fromFile(file), messageKey,contact.id, TYPE_MESSAGE_VOICE)
+                            uploadFileToStorage(
+                                Uri.fromFile(file),
+                                messageKey,
+                                contact.id,
+                                TYPE_MESSAGE_VOICE
+                            )
                             mSmoothScrollToPosition = true
                         }
                     }
@@ -114,7 +120,7 @@ class SingleChatFragment(private val contact: CommonModel) :
         btn_attach_image.setOnClickListener { attachImage() }
     }
 
-    private fun attachFile(){
+    private fun attachFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "*/*"
         startActivityForResult(intent, PICK_FILE_REQUEST_CODE)
@@ -224,19 +230,19 @@ class SingleChatFragment(private val contact: CommonModel) :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //Активномть которая запускается для получения картинки для фото пользователя
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null){
-            when (requestCode){
+        if (data != null) {
+            when (requestCode) {
                 CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
                     val uri: Uri = CropImage.getActivityResult(data).uri
                     val messageKey = getMessageKey(contact.id)
-                    uploadFileToStorage(uri, messageKey,contact.id, TYPE_MESSAGE_IMAGE)
+                    uploadFileToStorage(uri, messageKey, contact.id, TYPE_MESSAGE_IMAGE)
                     mSmoothScrollToPosition = true
                 }
                 PICK_FILE_REQUEST_CODE -> {
                     val uri = data.data
                     val messageKey = getMessageKey(contact.id)
                     val filename = getFilenameFromUri(uri!!)
-                    uploadFileToStorage(uri, messageKey,contact.id, TYPE_MESSAGE_FILE,filename)
+                    uploadFileToStorage(uri, messageKey, contact.id, TYPE_MESSAGE_FILE, filename)
                     mSmoothScrollToPosition = true
                 }
             }
@@ -264,7 +270,14 @@ class SingleChatFragment(private val contact: CommonModel) :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         //Слушатель выбора выпадающего меню
         when (item.itemId) {
-
+            R.id.menu_clear_chat -> clearCgat(contact.id) {
+                showToast("Чат очищен")
+                replaceFragment(MainListFragment())
+            }
+            R.id.menu_delete_chat -> deleteChat(contact.id) {
+                showToast("Чат удален")
+                replaceFragment(MainListFragment())
+            }
         }
         return true
     }
