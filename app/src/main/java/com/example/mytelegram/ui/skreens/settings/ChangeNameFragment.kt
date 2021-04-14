@@ -1,7 +1,8 @@
-package com.example.mytelegram.ui.skreens
+package com.example.mytelegram.ui.skreens.settings
 
 import com.example.mytelegram.R
 import com.example.mytelegram.database.*
+import com.example.mytelegram.ui.skreens.BaseChangeFragment
 import com.example.mytelegram.utilits.*
 import kotlinx.android.synthetic.main.fragment_change_name.*
 

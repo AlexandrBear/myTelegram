@@ -1,4 +1,4 @@
-package com.example.mytelegram.ui.skreens
+package com.example.mytelegram.ui.skreens.settings
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import com.example.mytelegram.R
 import com.example.mytelegram.database.*
+import com.example.mytelegram.ui.skreens.BaseFragment
 import com.example.mytelegram.utilits.*
 import com.google.firebase.storage.StorageReference
 import com.theartofdev.edmodo.cropper.CropImage
@@ -48,6 +49,7 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //Создание выпадающего меню
         activity?.menuInflater?.inflate(R.menu.settings_action_menu, menu)
     }
 

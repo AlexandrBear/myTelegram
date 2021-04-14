@@ -9,7 +9,7 @@ import com.example.mytelegram.database.AUTH
 import com.example.mytelegram.database.initFirebase
 import com.example.mytelegram.database.initUser
 import com.example.mytelegram.databinding.ActivityMainBinding
-import com.example.mytelegram.ui.skreens.MainFragment
+import com.example.mytelegram.ui.skreens.main_list.MainListFragment
 import com.example.mytelegram.ui.skreens.register.EnterPhoneNumberFragment
 import com.example.mytelegram.ui.objects.AppDrawer
 import com.example.mytelegram.utilits.*
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(mToolbar)
         if (AUTH.currentUser != null) {
             mAppDrawer.create()
-            replaceFragment(MainFragment(), false)
+            replaceFragment(MainListFragment(), false)
         } else {
             replaceFragment(EnterPhoneNumberFragment(),false)
         }
