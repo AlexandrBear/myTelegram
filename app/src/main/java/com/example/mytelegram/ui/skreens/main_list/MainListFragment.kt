@@ -41,7 +41,6 @@ class MainListFragment : Fragment(R.layout.fragment_main_list) {
                     TYPE_CHAT -> showChat(model)
                     TYPE_GROUP -> showGroup(model)
                 }
-
             }
         })
         mRecyclerView.adapter = mAdapter
@@ -63,6 +62,7 @@ class MainListFragment : Fragment(R.layout.fragment_main_list) {
                         }else{
                             newModel.lastMessage = tempList[0].text
                         }
+                        newModel.type = TYPE_GROUP
                         mAdapter.updateListItems(newModel)
                     })
             })
@@ -87,6 +87,7 @@ class MainListFragment : Fragment(R.layout.fragment_main_list) {
                         if (newModel.fullname.isEmpty()){
                             newModel.fullname = newModel.phone
                         }
+                        newModel.type = TYPE_CHAT
                         mAdapter.updateListItems(newModel)
                     })
             })
