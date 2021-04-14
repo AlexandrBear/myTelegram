@@ -8,6 +8,7 @@ import com.example.mytelegram.models.CommonModel
 import com.example.mytelegram.utilits.APP_ACTIVITY
 import com.example.mytelegram.utilits.AppValueEventListener
 import com.example.mytelegram.utilits.hideKeyboard
+import com.example.mytelegram.utilits.replaceFragment
 import kotlinx.android.synthetic.main.fragment_add_contacts.*
 
 
@@ -30,7 +31,7 @@ class AddContactsFragment : Fragment(R.layout.fragment_add_contacts) {
         initRecyclerView()
         add_contacts_btn_next.setOnClickListener {
             listContacts.forEach {
-                println(it.id)
+                replaceFragment(CreateGroupFragment(listContacts))
             }
         }
     }
